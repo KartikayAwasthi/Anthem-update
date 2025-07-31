@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* Smooth scrolling setup */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1c1c1c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ba6a5a, #e49385);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #e49385, #ba6a5a);
+}
+
+/* 3D Room Interactive Elements */
+.room-3d-interactive {
+  cursor: grab;
+}
+
+.room-3d-interactive:active {
+  cursor: grabbing;
+}
+
+/* Three.js Canvas cursor fixes */
+canvas {
+  outline: none !important;
+}
+
+/* Interactive 3D element hover effects */
+.three-interactive-element {
+  cursor: pointer !important;
+  transition: all 0.3s ease;
+}
+
+.three-interactive-element:hover {
+  filter: brightness(1.1);
+}
+
+/* Loading spinner for 3D content */
+.room-3d-loading {
+  background: linear-gradient(45deg, #ba6a5a, #e49385);
+  background-size: 400% 400%;
+  animation: gradient-shift 2s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
