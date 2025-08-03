@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./pages/Header";
 import Footer from "./pages/Footer";
@@ -18,14 +18,19 @@ import ScrollToTop from "./components/ScrollToTop";
 import ScrollProgressBar from "./components/ScrollProgressBar";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import { CartProvider } from "./contexts/CartContext";
-
+import { initSmoothScrolling } from "./utils/smoothScroll";
 
 
 function App() {
+  // Initialize enhanced smooth scrolling on app load
+  useEffect(() => {
+    initSmoothScrolling();
+  }, []);
+
   return (
     <LoadingProvider>
       <CartProvider>
-        <div className="scroll-smooth bg-[#1c1c1c] text-white">
+        <div className="scroll-smooth smooth-scroll bg-[#1c1c1c] text-white">
         <LoadingScreen />
         <Header />
         <ScrollProgressBar />

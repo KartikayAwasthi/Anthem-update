@@ -71,12 +71,12 @@ const Contact = () => {
               <div className="flex items-center gap-3">
                 <Mail className="text-[#efb4a5]" />
                 <a
-                  href="https://mail.google.com/mail/?view=cm&to=support@anthemfans.com"
+                  href="https://mail.google.com/mail/?view=cm&to=info@emsquareglobal.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition"
                 >
-                  support@anthemfans.com
+                  info@emsquareglobal.com
                 </a>
               </div>
               <div className="flex items-center gap-3">

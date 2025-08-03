@@ -7,7 +7,7 @@ import CartButton from '../components/CartButton';
 
 // Import images for cart functionality
 const skyroImg = "/Skyro/fan4.png";
-const inaraImg = "/Inara/fan5.png";
+const inaraImg = "/inara-ecom/White/white-inara4.jpg"; // Updated to use inara-ecom
 
 const RoomPage = () => {
   const { addToCart } = useCart();

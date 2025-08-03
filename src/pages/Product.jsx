@@ -7,7 +7,7 @@ import CartButton from "../components/CartButton";
 
 // Images
 const skyroImg = "/Skyro/fan6.png";
-const inaraImg = "/Inara/fan4.png";
+const inaraImg = "/inara-ecom/White/white-inara4.jpg"; // Updated to use inara-ecom
 const evaaraImg = "/eVaara/fan1.png";
 const laraImg = "/Lara/fan1.png";
 // const pedestalImg = "/pedestal.webp"; // Add your pedestal fan image here

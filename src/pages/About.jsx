@@ -25,108 +25,161 @@ const About = () => {
 
   return (
     <div className="bg-[#1c1c1c] text-white min-h-0 py-10 w-full">
-      {/* Title */}
+      {/* Page Title */}
       <motion.h1
-        className="text-4xl font-bold text-center mb-4 px-4 md:px-12 text-[#ba6a5a]"
+        className="text-4xl md:text-5xl font-extrabold text-center mb-4 px-4 md:px-12 text-[#ba6a5a]"
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         Our Story 🚀
       </motion.h1>
-      <p className="text-gray-300 text-center max-w-3xl mx-auto mb-8 px-4 md:px-12">
+      <p className="text-gray-300 text-center max-w-3xl mx-auto mb-8 px-4 md:px-12 text-lg">
         In 1991, Emsquare began not as manufacturers, but as passionate technicians. Today, we are a fully integrated design and manufacturing powerhouse, building fans that are as beautiful as they are functional.
-
       </p>
 
-      {/* ✅ Modern Horizontal Timeline */}
-      <section className="py-10 bg-[#2f2f2f] text-white w-full px-4 md:px-12 rounded-3xl shadow-xl my-6" id="timeline">
-        <div className="w-full">
-          <motion.h2
-            className="text-3xl md:text-4xl font-bold text-center mb-12 text-[#ba6a5a]"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 20 }}
-            transition={{ duration: 0.5 }}
+      {/* Timeline Section */}
+      <section className="py-16 bg-[#2f2f2f] text-white w-full px-4 md:px-12 rounded-3xl shadow-2xl my-6" id="timeline">
+        <motion.h2
+          className="text-3xl md:text-4xl font-bold text-center mb-12 text-[#ba6a5a]"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Milestones Through Time ⏳
+        </motion.h2>
+
+        {/* Timeline Enhanced Section */}
+<div className="relative px-4 md:px-12 py-10">
+  {/* Line Connector */}
+  <div className="absolute md:top-7 top-0 left-1/2 md:left-0 md:right-0 w-1 md:h-1 h-full bg-[#efb4a5]/30 z-0 mx-auto md:mx-0 hidden md:block" />
+
+  <div className="flex flex-col md:flex-row justify-between items-center gap-16 md:gap-0 relative z-10">
+    {[
+      {
+        year: "1991",
+        text: "Started as an OEM supplier during India’s liberalization era.",
+        status: "done",
+      },
+      {
+        year: "2010",
+        text: "Opened a modern integrated factory in Goa with in-house painting, winding, and testing.",
+        status: "done",
+      },
+      {
+        year: "2024",
+        text: "Exporting to UAE, Iraq, Oman, Nepal, Bahrain, and parts of Africa.",
+        status: "done",
+      },
+      {
+        year: "2025",
+        text: "Expanding production capacity with automation and AI-based testing.",
+        status: "upcoming",
+      },
+      {
+        year: "2030",
+        text: "Becoming a leading global supplier with presence in 30+ countries.",
+        status: "upcoming",
+      },
+    ].map((milestone, index) => (
+      <motion.div
+        key={index}
+        className="relative flex flex-col items-center text-center p-4 md:w-1/5"
+        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.6, delay: index * 0.2 }}
+      >
+        {/* Dot */}
+        <div className="relative z-10">
+          <div
+            className={`w-8 h-8 rounded-full shadow-lg border-4 border-[#2f2f2f] ${
+              milestone.status === "done"
+                ? "bg-[#e49385] animate-pulse glow"
+                : "bg-[#ba6a5a] animate-ping"
+            }`}
+          />
+        </div>
+
+        {/* Card */}
+        <motion.div
+          className={`mt-4 p-6 rounded-xl shadow-xl border ${
+            milestone.status === "done"
+              ? "bg-[#1c1c1c] border-[#ba6a5a]/30"
+              : "bg-[#2f2f2f] border-[#ff8f7a]/40"
+          } max-w-xs hover:scale-105 transition-transform duration-300`}
+          whileHover={{ scale: 1.05 }}
+        >
+          <h3
+            className={`text-xl font-bold mb-2 ${
+              milestone.status === "done" ? "text-[#ba6a5a]" : "text-[#efb4a5]"
+            }`}
           >
-            Milestones Through Time ⏳
-          </motion.h2>
+            {milestone.year}
+          </h3>
+          <p className="text-gray-400 text-sm">{milestone.text}</p>
+        </motion.div>
+      </motion.div>
+    ))}
+  </div>
+</div>
 
-          {/* Timeline Steps */}
-          <div className="relative">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-12 md:gap-0">
-
-              {/* 1991 */}
-              <div className="flex flex-col items-center text-center">
-                <div className="bg-[#e49385] w-6 h-6 rounded-full animate-pulse mb-2"></div>
-                <h3 className="text-xl font-semibold">1991</h3>
-                <p className="text-gray-400 mt-2 max-w-xs">Started as an OEM supplier during India’s liberalization era.</p>
-              </div>
-
-              {/* 2010 */}
-              <div className="flex flex-col items-center text-center">
-                <div className="bg-[#e49385] w-6 h-6 rounded-full animate-pulse mb-2"></div>
-                <h3 className="text-xl font-semibold">2010</h3>
-                <p className="text-gray-400 mt-2 max-w-xs">Opened a modern integrated factory in Goa with in-house painting, winding, and testing.</p>
-              </div>
-
-              {/* 2024 */}
-              <div className="flex flex-col items-center text-center">
-                <div className="bg-[#e49385] w-6 h-6 rounded-full animate-pulse mb-2"></div>
-                <h3 className="text-xl font-semibold">2024</h3>
-                <p className="text-gray-400 mt-2 max-w-xs">Exporting to UAE, Iraq, Oman, Nepal, Bahrain, and parts of Africa.</p>
-              </div>
-            </div>
-
-            {/* Connecting Line */}
-            <div className="absolute top-3 left-0 right-0 h-1 bg-[#efb4a5] hidden md:block z-0"></div>
-          </div>
-
-          {/* Factory Image Gallery */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
-            <img src={factory1} alt="Old Factory" className="rounded-xl shadow-lg object-cover w-full h-64" />
-            <img src={factory2} alt="New Factory" className="rounded-xl shadow-lg object-cover w-full h-64" />
-          </div>
+        {/* Factory Images */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-10">
+          <motion.img
+            src={factory1}
+            alt="Old Factory"
+            className="rounded-xl shadow-xl object-cover w-full h-64 hover:scale-105 transition-transform duration-300"
+            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.6 }}
+          />
+          <motion.img
+            src={factory2}
+            alt="New Factory"
+            className="rounded-xl shadow-xl object-cover w-full h-64 hover:scale-105 transition-transform duration-300"
+            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.6 }}
+          />
         </div>
       </section>
 
       {/* CEO Message */}
-<motion.div
-  ref={ceoRef}
-  className="mt-12 px-4 md:px-12"
-  initial={{ opacity: 0, y: 20 }}
-  animate={inViewCeo ? { opacity: 1, y: 20 } : {}}
-  transition={{ duration: 1 }}
->
-  <h2 className="text-3xl font-bold text-center mb-6 text-[#ba6a5a]">From the CEO 💬</h2>
-  <div className="flex flex-col items-center text-center">
-    <img
-      src={ceoImg}
-      alt="CEO"
-      className="w-40 h-40 object-cover rounded-full shadow-lg mb-4"
-    />
-    <p className="text-gray-300 text-lg max-w-2xl">
-      Design is not skin-deep. At Anthem, it moves air silently, saves energy intelligently, and enhances your space effortlessly.
-    </p>
-    <span className="text-[#efb4a5] mt-2 font-semibold">— Elone Musk</span>
-  </div>
-</motion.div>
-
+      <motion.div
+        ref={ceoRef}
+        className="mt-20 px-4 md:px-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={inViewCeo ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 1 }}
+      >
+        <h2 className="text-3xl font-bold text-center mb-6 text-[#ba6a5a]">From the CEO 💬</h2>
+        <div className="flex flex-col items-center text-center">
+          <img src={ceoImg} alt="CEO" className="w-40 h-40 object-cover rounded-full shadow-lg mb-4" />
+          <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
+            Design is not skin-deep. At Anthem, it moves air silently, saves energy intelligently, and enhances your space effortlessly.
+          </p>
+          <span className="text-[#efb4a5] mt-3 font-semibold text-lg">— Elone Musk</span>
+        </div>
+      </motion.div>
 
       {/* Team Section */}
-      <div ref={teamRef} className={`transition-opacity duration-1000 ease-in-out mt-12 ${inViewTeam ? "opacity-100" : "opacity-0"} px-4 md:px-12`}>
-        <motion.h2 className="text-3xl font-bold text-center mb-10 text-[#ba6a5a]">Meet Our Team 👥</motion.h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center w-full mx-auto max-w-6xl">
+      <div
+        ref={teamRef}
+        className={`transition-opacity duration-1000 ease-in-out mt-20 ${inViewTeam ? "opacity-100" : "opacity-0"} px-4 md:px-12`}
+      >
+        <motion.h2 className="text-3xl font-bold text-center mb-12 text-[#ba6a5a]">Meet Our Team 👥</motion.h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center mx-auto max-w-6xl">
           {team.map((member, idx) => (
             <motion.div
               key={idx}
-              className="bg-[#2f2f2f] backdrop-blur-md p-6 rounded-xl shadow-md border border-[#ba6a5a]/30"
+              className="bg-[#2f2f2f]/70 p-6 rounded-xl shadow-lg border border-[#ba6a5a]/30 backdrop-blur-md"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
               <img
                 src={member.img}
                 alt={member.name}
-                className="w-28 h-28 mx-auto rounded-full object-cover mb-4 border border-white/20"
+                className="w-28 h-28 mx-auto rounded-full object-cover mb-4 border border-white/10 shadow-md"
               />
               <h3 className="text-xl font-semibold text-[#ba6a5a]">{member.name}</h3>
               <p className="text-gray-400">{member.role}</p>
@@ -136,28 +189,24 @@ const About = () => {
       </div>
 
       {/* Catalog Download */}
-<motion.div
-  ref={catalogRef}
-  className="mt-12 text-center px-4 md:px-12"
-  initial={{ opacity: 0, y: 20 }}
-  animate={inViewCatalog ? { opacity: 1, y: 20 } : {}}
-  transition={{ duration: 1 }}
->
-  <h2 className="text-2xl font-semibold mb-4">
-    Download Our Product Catalog 
-  </h2>
-  <a
-    href={catalogPDF}
-    download="Anthem_Fan_Catalog.pdf"
-    className="inline-block bg-[#ba6a5a] hover:bg-[#e49385] text-white font-medium px-6 py-3 rounded-lg transition shadow-md"
-  >
-    Download Catalog
-  </a>
-</motion.div>
-
+      <motion.div
+        ref={catalogRef}
+        className="mt-20 text-center px-4 md:px-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={inViewCatalog ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 1 }}
+      >
+        <h2 className="text-2xl font-semibold mb-4">Download Our Product Catalog 📘</h2>
+        <a
+          href={catalogPDF}
+          download="Anthem_Fan_Catalog.pdf"
+          className="inline-block bg-[#ba6a5a] hover:bg-[#e49385] text-white font-semibold px-6 py-3 rounded-full transition shadow-md"
+        >
+          📎 Download Catalog
+        </a>
+      </motion.div>
     </div>
   );
 };
 
 export default About;
-

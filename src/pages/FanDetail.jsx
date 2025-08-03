@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Star, Zap, Volume2, Shield, ChevronDown, ChevronUp, ShoppingCart, Heart, X, ChevronLeft, ChevronRight, ZoomIn, Share2 } from "lucide-react";
+import { ArrowLeft, Star, Zap, Volume2, Shield, ChevronDown, ChevronUp, ShoppingCart, Heart, X, ChevronLeft, ChevronRight, ZoomIn, Share2, Settings, Battery } from "lucide-react";
 import ColorChangeTransition from "../components/ColorChangeTransition";
 import { useCart } from "../contexts/CartContext";
 import CartButton from "../components/CartButton";
 
 // Import fan images
 const skyroImg = "/Skyro/fan2.png";
-const inaraImg = "/Inara/fan5.png";
+const inaraImg = "/inara-ecom/White/white-inara4.jpg"; // Updated to use inara-ecom
 const laraImg = "/Lara/fan1.png";
 // const pedestalImg = "/pedestal.webp";
 
@@ -26,38 +26,62 @@ const skyroImg3 = "/Skyro/fan3.png";
 const skyroImg4 = "/Skyro/fan4.png";
 const skyroImg5 = "/Skyro/fan5.png";
 
-// Inara variants
-const inaraImg1 = "/Inara/fan1.png";
-const inaraImg2 = "/Inara/fan2.png";
-const inaraImg3 = "/Inara/fan3.png";
-const inaraImg4 = "/Inara/fan4.png";
-const inaraImg5 = "/Inara/fan5.png";
-const inaraImg6 = "/Inara/fan6.png";
-const inaraImg7 = "/Inara/fan7.png";
+// Inara variants - Updated to use inara-ecom folder
+const inaraImg1 = "/inara-ecom/White/Pearl-white-inara4.jpg";      // Pearl White
+const inaraImg2 = "/inara-ecom/Brown/brown-inara4.jpg";            // Bakers Brown
+const inaraImg3 = "/inara-ecom/Black/black-inara4.jpg";            // Matte Black
+const inaraImg4 = "/inara-ecom/Blue/Blue-Inara4.jpg";              // Royal Blue
+const inaraImg5 = "/inara-ecom/Golden/golden-inara4.jpg";          // Antique Gold
+const inaraImg6 = "/inara-ecom/Purple/purple-inara4.jpg";          // Purple
+const inaraImg7 = "/inara-ecom/White/white-inara4.jpg";            // Classic White
 
 const fanData = {
   skyro: {
     name: "SKYRO",
     image: skyroImg,
-    price: "₹3,999",
-    rating: 4.8,
-    description:
-      "The SKYRO ceiling fan combines cutting-edge BLDC motor technology with elegant design. Perfect for modern homes seeking efficiency and style.",
-    features: [
-      "BLDC Motor - Ultra energy efficient",
-      "Remote Control with 6 speed settings",
-      "Anti-dust coating for easy maintenance",
-      "Aerodynamic blade design for maximum airflow",
-      "Whisper-quiet operation below 35dB"
-    ],
-    specifications: {
-      "Motor Type": "BLDC (Brushless DC)",
-      "Power Consumption": "28W",
-      "Air Delivery": "230 CMM",
-      "Speed": "300 RPM",
-      Sweep: "1200mm",
-      Warranty: "2 Years"
+    motorTypes: {
+      bldc: {
+        name: "BLDC Motor",
+        price: "₹3,999",
+        description: "The SKYRO ceiling fan combines cutting-edge BLDC motor technology with elegant design. Perfect for modern homes seeking efficiency and style.",
+        features: [
+          "BLDC Motor - Ultra energy efficient",
+          "Remote Control with 6 speed settings",
+          "Anti-dust coating for easy maintenance",
+          "Aerodynamic blade design for maximum airflow",
+          "Whisper-quiet operation below 35dB"
+        ],
+        specifications: {
+          "Motor Type": "BLDC (Brushless DC)",
+          "Power Consumption": "28W",
+          "Air Delivery": "230 CMM",
+          "Speed": "300 RPM",
+          Sweep: "1200mm",
+          Warranty: "2 Years"
+        }
+      },
+      induction: {
+        name: "Induction Motor",
+        price: "₹2,999",
+        description: "The SKYRO with reliable induction motor offers robust performance and durability. Perfect for consistent everyday use.",
+        features: [
+          "Reliable Induction Motor",
+          "Consistent high-speed performance",
+          "Durable and long-lasting design",
+          "Strong airflow delivery",
+          "Easy maintenance"
+        ],
+        specifications: {
+          "Motor Type": "Single Phase Induction",
+          "Power Consumption": "75W",
+          "Air Delivery": "280 CMM",
+          "Speed": "1400 RPM",
+          Sweep: "1200mm",
+          Warranty: "2 Years"
+        }
+      }
     },
+    rating: 4.8,
     colors: [
       { name: "Classic White", image: skyroImg1, code: "#FFFFFF" },
       { name: "Matte Black", image: skyroImg2, code: "#2F2F2F" },
@@ -69,25 +93,49 @@ const fanData = {
   inara: {
     name: "INARA",
     image: inaraImg,
-    price: "₹4,499",
-    rating: 4.9,
-    description:
-      "INARA represents the pinnacle of ceiling fan engineering with premium materials and smart features for the discerning homeowner.",
-    features: [
-      "Premium BLDC Motor technology",
-      "Smart home integration ready",
-      "LED light with dimmer control",
-      "Rust-proof aluminum body",
-      "Energy Star certified"
-    ],
-    specifications: {
-      "Motor Type": "BLDC Premium",
-      "Power Consumption": "32W",
-      "Air Delivery": "250 CMM",
-      "Speed": "320 RPM",
-      Sweep: "1200mm",
-      Warranty: "3 Years"
+    motorTypes: {
+      bldc: {
+        name: "BLDC Motor",
+        price: "₹4,499",
+        description: "INARA represents the pinnacle of ceiling fan engineering with premium BLDC motor technology and smart features for the discerning homeowner.",
+        features: [
+          "Premium BLDC Motor technology",
+          "Smart home integration ready",
+          "LED light with dimmer control",
+          "Rust-proof aluminum body",
+          "Energy Star certified"
+        ],
+        specifications: {
+          "Motor Type": "BLDC Premium",
+          "Power Consumption": "32W",
+          "Air Delivery": "250 CMM",
+          "Speed": "320 RPM",
+          Sweep: "1200mm",
+          Warranty: "3 Years"
+        }
+      },
+      induction: {
+        name: "Induction Motor",
+        price: "₹3,499",
+        description: "INARA with powerful induction motor delivers exceptional performance and reliability for demanding environments.",
+        features: [
+          "High-performance Induction Motor",
+          "Superior build quality",
+          "Powerful airflow generation",
+          "Rust-proof aluminum body",
+          "Consistent performance"
+        ],
+        specifications: {
+          "Motor Type": "Single Phase Induction",
+          "Power Consumption": "85W",
+          "Air Delivery": "300 CMM",
+          "Speed": "1450 RPM",
+          Sweep: "1200mm",
+          Warranty: "3 Years"
+        }
+      }
     },
+    rating: 4.9,
     colors: [
       { name: "Pearl White", image: inaraImg1, code: "#F8F8FF" },
       { name: "Bakers Brown", image: inaraImg2, code: "#8B4513" },
@@ -100,26 +148,50 @@ const fanData = {
   },
   evaara: {
     name: "eVAARA",
-    image: evaaraImg1, // Updated to use first image from src/assets/eVaara
-    price: "₹3,699",
-    rating: 4.7,
-    description:
-      "eVAARA offers exceptional value with reliable performance and modern aesthetics. The perfect choice for everyday comfort.",
-    features: [
-      "Efficient BLDC motor",
-      "Decorative LED lighting",
-      "Multiple finish options",
-      "Easy installation design",
-      "Low maintenance operation"
-    ],
-    specifications: {
-      "Motor Type": "BLDC Standard",
-      "Power Consumption": "25W",
-      "Air Delivery": "220 CMM",
-      "Speed": "280 RPM",
-      Sweep: "1200mm",
-      Warranty: "2 Years"
+    image: evaaraImg1,
+    motorTypes: {
+      bldc: {
+        name: "BLDC Motor",
+        price: "₹3,699",
+        description: "eVAARA offers exceptional value with reliable BLDC performance and modern aesthetics. The perfect choice for energy-conscious homes.",
+        features: [
+          "Efficient BLDC motor",
+          "Decorative LED lighting",
+          "Multiple finish options",
+          "Easy installation design",
+          "Low maintenance operation"
+        ],
+        specifications: {
+          "Motor Type": "BLDC Standard",
+          "Power Consumption": "25W",
+          "Air Delivery": "220 CMM",
+          "Speed": "280 RPM",
+          Sweep: "1200mm",
+          Warranty: "2 Years"
+        }
+      },
+      induction: {
+        name: "Induction Motor",
+        price: "₹2,699",
+        description: "eVAARA with induction motor provides reliable everyday comfort with proven motor technology and attractive design.",
+        features: [
+          "Proven Induction motor technology",
+          "Decorative lighting",
+          "Multiple finish options",
+          "Easy installation design",
+          "Robust performance"
+        ],
+        specifications: {
+          "Motor Type": "Single Phase Induction",
+          "Power Consumption": "70W",
+          "Air Delivery": "270 CMM",
+          "Speed": "1350 RPM",
+          Sweep: "1200mm",
+          Warranty: "2 Years"
+        }
+      }
     },
+    rating: 4.7,
     colors: [
       { name: "Classic White", image: evaaraImg1, code: "#FFFFFF" },
       { name: "Pearl Bronze", image: evaaraImg2, code: "#CD7F32" },
@@ -131,25 +203,49 @@ const fanData = {
   lara: {
     name: "LARA",
     image: laraImg,
-    price: "₹4,199",
-    rating: 4.8,
-    description:
-      "LARA combines elegant design with superior performance and reliability. Perfect for those who appreciate refined aesthetics with cutting-edge technology.",
-    features: [
-      "Advanced BLDC motor technology",
-      "Elegant and sophisticated design",
-      "Superior build quality and reliability",
-      "Energy efficient performance",
-      "Premium finish and materials"
-    ],
-    specifications: {
-      "Motor Type": "BLDC Premium",
-      "Power Consumption": "30W",
-      "Air Delivery": "240 CMM",
-      "Speed": "310 RPM",
-      Sweep: "1200mm",
-      Warranty: "3 Years"
+    motorTypes: {
+      bldc: {
+        name: "BLDC Motor",
+        price: "₹4,199",
+        description: "LARA combines elegant design with superior BLDC performance and reliability. Perfect for those who appreciate refined aesthetics with cutting-edge technology.",
+        features: [
+          "Advanced BLDC motor technology",
+          "Elegant and sophisticated design",
+          "Superior build quality and reliability",
+          "Energy efficient performance",
+          "Premium finish and materials"
+        ],
+        specifications: {
+          "Motor Type": "BLDC Premium",
+          "Power Consumption": "30W",
+          "Air Delivery": "240 CMM",
+          "Speed": "310 RPM",
+          Sweep: "1200mm",
+          Warranty: "3 Years"
+        }
+      },
+      induction: {
+        name: "Induction Motor",
+        price: "₹3,199",
+        description: "LARA with induction motor delivers elegant design combined with robust motor performance for reliable everyday use.",
+        features: [
+          "Reliable Induction motor technology",
+          "Elegant and sophisticated design",
+          "Superior build quality and reliability",
+          "Strong airflow performance",
+          "Premium finish and materials"
+        ],
+        specifications: {
+          "Motor Type": "Single Phase Induction",
+          "Power Consumption": "80W",
+          "Air Delivery": "290 CMM",
+          "Speed": "1400 RPM",
+          Sweep: "1200mm",
+          Warranty: "3 Years"
+        }
+      }
     },
+    rating: 4.8,
     colors: [
       { name: "Classic White", image: laraImg, code: "#FFFFFF" }
     ]
@@ -207,6 +303,7 @@ const FanDetail = () => {
   const { addToCart } = useCart();
   const fan = fanData[fanId];
   const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedMotorType, setSelectedMotorType] = useState('bldc'); // Default to BLDC
   const [showColorTransition, setShowColorTransition] = useState(false);
   const [isSpecsOpen, setIsSpecsOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -215,21 +312,33 @@ const FanDetail = () => {
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0);
 
+  // Get current motor data based on selection
+  const getCurrentMotorData = () => {
+    return fan?.motorTypes?.[selectedMotorType] || fan?.motorTypes?.bldc || {};
+  };
+
+  // Handle motor type change
+  const handleMotorTypeChange = (motorType) => {
+    setSelectedMotorType(motorType);
+  };
+
   // Handle add to cart
   const handleAddToCart = () => {
     if (fan) {
+      const currentMotor = getCurrentMotorData();
       const cartItem = {
-        id: fan.id || fanId,
-        name: fan.name,
-        price: fan.price,
+        id: `${fan.id || fanId}-${selectedMotorType}`,
+        name: `${fan.name} (${currentMotor.name})`,
+        price: currentMotor.price,
         image: getCurrentImage(),
-        desc: fan.description,
-        color: selectedColor?.name || 'Default'
+        desc: currentMotor.description,
+        color: selectedColor?.name || 'Default',
+        motorType: currentMotor.name
       };
       addToCart(cartItem);
       
       // Optional: Show success message
-      alert(`${fan.name} added to cart!`);
+      alert(`${fan.name} with ${currentMotor.name} added to cart!`);
     }
   };
 
@@ -521,6 +630,43 @@ const FanDetail = () => {
                 </div>
               </div>
             )}
+
+            {/* Motor Type Selection */}
+            {fan.motorTypes && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-[#e49385]">Motor Type</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {Object.entries(fan.motorTypes).map(([motorKey, motorData]) => (
+                    <motion.div
+                      key={motorKey}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`cursor-pointer p-4 rounded-xl border-2 transition-all duration-300 ${
+                        selectedMotorType === motorKey
+                          ? "border-[#ba6a5a] bg-[#ba6a5a]/10"
+                          : "border-gray-600 hover:border-[#e49385] bg-[#2f2f2f]"
+                      }`}
+                      onClick={() => handleMotorTypeChange(motorKey)}
+                    >
+                      <div className="flex items-center justify-center mb-3">
+                        {motorKey === 'bldc' ? (
+                          <Battery className="w-8 h-8 text-[#ba6a5a]" />
+                        ) : (
+                          <Settings className="w-8 h-8 text-[#ba6a5a]" />
+                        )}
+                      </div>
+                      <div className="text-center">
+                        <h4 className="font-semibold text-white mb-1">{motorData.name}</h4>
+                        <p className="text-[#ba6a5a] font-bold text-lg">{motorData.price}</p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {motorKey === 'bldc' ? 'Energy Efficient' : 'High Performance'}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
           </motion.div>
 
           {/* Product Details */}
@@ -550,9 +696,12 @@ const FanDetail = () => {
                   <span className="text-gray-300 ml-2">({fan.rating})</span>
                 </div>
                 <span className="text-green-400 text-sm">In Stock</span>
+                <span className="bg-[#ba6a5a] text-white px-3 py-1 rounded-full text-sm">
+                  {getCurrentMotorData().name}
+                </span>
               </div>
               <p className="text-gray-300 text-lg leading-relaxed">
-                {fan.description}
+                {getCurrentMotorData().description}
               </p>
             </div>
 
@@ -560,8 +709,8 @@ const FanDetail = () => {
             <div className="bg-gradient-to-r from-[#2f2f2f] to-[#1f1f1f] rounded-xl p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-3xl font-bold text-[#ba6a5a]">{fan.price}</span>
-                  <span className="text-gray-400 line-through ml-3">₹{parseInt(fan.price.replace('₹', '')) + 1000}</span>
+                  <span className="text-3xl font-bold text-[#ba6a5a]">{getCurrentMotorData().price}</span>
+                  <span className="text-gray-400 line-through ml-3">₹{parseInt(getCurrentMotorData().price?.replace('₹', '') || '0') + 1000}</span>
                 </div>
                 <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
                   Save ₹1000
@@ -573,7 +722,7 @@ const FanDetail = () => {
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-[#e49385]">Key Features</h3>
               <div className="grid grid-cols-1 gap-3">
-                {fan.features.map((feature, index) => (
+                {getCurrentMotorData().features?.map((feature, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 10 }}
@@ -593,12 +742,13 @@ const FanDetail = () => {
               <div className="flex-1">
                 <CartButton 
                   product={{
-                    id: fan.id || fanId,
-                    name: fan.name,
-                    price: fan.price,
+                    id: `${fan.id || fanId}-${selectedMotorType}`,
+                    name: `${fan.name} (${getCurrentMotorData().name})`,
+                    price: getCurrentMotorData().price,
                     image: getCurrentImage(),
-                    desc: fan.description,
-                    color: selectedColor?.name || 'Default'
+                    desc: getCurrentMotorData().description,
+                    color: selectedColor?.name || 'Default',
+                    motorType: getCurrentMotorData().name
                   }}
                   className="py-4 px-6"
                 />
@@ -657,7 +807,7 @@ const FanDetail = () => {
             className="overflow-hidden"
           >
             <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Object.entries(fan.specifications).map(([key, value], index) => (
+              {Object.entries(getCurrentMotorData().specifications || {}).map(([key, value], index) => (
                 <motion.div
                   key={key}
                   initial={{ opacity: 0, y: 10 }}
@@ -745,7 +895,8 @@ const FanDetail = () => {
                       className="w-full h-32 object-contain mb-3"
                     />
                     <h4 className="font-semibold text-white mb-1">Anthem {relatedFan.name}</h4>
-                    <p className="text-[#ba6a5a] font-bold">{relatedFan.price}</p>
+                    <p className="text-[#ba6a5a] font-bold">{relatedFan.motorTypes?.bldc?.price || 'N/A'}</p>
+                    <p className="text-xs text-gray-400 mt-1">Starting from BLDC variant</p>
                   </motion.div>
                 </Link>
               ))}

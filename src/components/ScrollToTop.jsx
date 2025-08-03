@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
+import { scrollToTop as smoothScrollToTop } from '../utils/smoothScroll';
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -25,7 +22,7 @@ const ScrollToTop = () => {
   }, []);
 
   const handleScrollToTop = () => {
-    scrollToTop();
+    smoothScrollToTop({ duration: 800, easing: 'easeInOutCubic' });
   };
 
   return (

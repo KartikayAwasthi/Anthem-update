@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "../contexts/CartContext";
+import { scrollToElement, scrollToTop } from "../utils/smoothScroll";
 import Cart from "../components/Cart";
 
 // Import assets
 const skyroImg = "/Skyro/fan5.png";
-const inaraImg = "/Inara/fan3.png";
+const inaraImg = "/inara-ecom/White/white-inara4.jpg"; // Updated to use inara-ecom
 const evaaraImg = "/eVaara/fan3.png";
 // const pedestalImg = "/pedestal.webp";
 const anthemLogo = "/Anthem-logo.png";
@@ -20,20 +22,22 @@ const Header = () => {
   const dropdownRef = useRef(null);
   const { getCartItemsCount } = useCart();
 
-  // Simple scroll functions to replace Lenis
-  const scrollTo = (target, options = {}) => {
+  // Enhanced smooth scroll functions using utilities
+  const handleScrollTo = (target) => {
     if (typeof target === 'string') {
-      const element = document.querySelector(target);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    } else if (target && target.scrollIntoView) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToElement(target, { 
+        offset: -80, 
+        duration: 800, 
+        easing: 'easeInOutCubic' 
+      });
     }
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleScrollToTop = () => {
+    scrollToTop({ 
+      duration: 800, 
+      easing: 'easeInOutCubic' 
+    });
   };
 
   const navLinks = [
@@ -77,17 +81,20 @@ const Header = () => {
         window.location.href = "/";
       } else {
         // If already on home page, just scroll to top
-        scrollToTop();
+        handleScrollToTop();
       }
       setMobileMenuOpen(false);
     } else if (to.startsWith("#")) {
       e.preventDefault();
+      
+      // Use enhanced scroll function
+      handleScrollTo(to);
       // Only handle section scrolling if we're on the home page
       if (location.pathname === "/") {
         const id = to.replace("#", "");
         const el = document.getElementById(id);
         if (el) {
-          scrollTo(el);
+          handleScrollTo(`#${id}`);
         }
       } else {
         // If on a different page, navigate to home with the section
