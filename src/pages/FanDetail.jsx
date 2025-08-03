@@ -169,26 +169,6 @@ const fanData = {
           Sweep: "1200mm",
           Warranty: "2 Years"
         }
-      },
-      induction: {
-        name: "Induction Motor",
-        price: "₹2,699",
-        description: "eVAARA with induction motor provides reliable everyday comfort with proven motor technology and attractive design.",
-        features: [
-          "Proven Induction motor technology",
-          "Decorative lighting",
-          "Multiple finish options",
-          "Easy installation design",
-          "Robust performance"
-        ],
-        specifications: {
-          "Motor Type": "Single Phase Induction",
-          "Power Consumption": "70W",
-          "Air Delivery": "270 CMM",
-          "Speed": "1350 RPM",
-          Sweep: "1200mm",
-          Warranty: "2 Years"
-        }
       }
     },
     rating: 4.7,
@@ -204,26 +184,6 @@ const fanData = {
     name: "LARA",
     image: laraImg,
     motorTypes: {
-      bldc: {
-        name: "BLDC Motor",
-        price: "₹4,199",
-        description: "LARA combines elegant design with superior BLDC performance and reliability. Perfect for those who appreciate refined aesthetics with cutting-edge technology.",
-        features: [
-          "Advanced BLDC motor technology",
-          "Elegant and sophisticated design",
-          "Superior build quality and reliability",
-          "Energy efficient performance",
-          "Premium finish and materials"
-        ],
-        specifications: {
-          "Motor Type": "BLDC Premium",
-          "Power Consumption": "30W",
-          "Air Delivery": "240 CMM",
-          "Speed": "310 RPM",
-          Sweep: "1200mm",
-          Warranty: "3 Years"
-        }
-      },
       induction: {
         name: "Induction Motor",
         price: "₹3,199",
@@ -633,36 +593,37 @@ const FanDetail = () => {
 
             {/* Motor Type Selection */}
             {fan.motorTypes && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#e49385]">Motor Type</h3>
-                <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold text-[#e49385] mb-2">Motor Type</h3>
+                <div className="flex flex-wrap gap-2">
                   {Object.entries(fan.motorTypes).map(([motorKey, motorData]) => (
-                    <motion.div
+                    <motion.button
                       key={motorKey}
-                      whileHover={{ scale: 1.02 }}
+                      whileHover={{ scale: 1.02, y: -1 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`cursor-pointer p-4 rounded-xl border-2 transition-all duration-300 ${
+                      className={`group relative px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 transform shadow-lg hover:shadow-xl ${
                         selectedMotorType === motorKey
-                          ? "border-[#ba6a5a] bg-[#ba6a5a]/10"
-                          : "border-gray-600 hover:border-[#e49385] bg-[#2f2f2f]"
+                          ? "bg-gradient-to-r from-[#ba6a5a] to-[#e49385] text-white shadow-[#ba6a5a]/25"
+                          : "bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 hover:border-[#e49385]/50"
                       }`}
                       onClick={() => handleMotorTypeChange(motorKey)}
                     >
-                      <div className="flex items-center justify-center mb-3">
+                      <div className="flex items-center gap-2">
                         {motorKey === 'bldc' ? (
-                          <Battery className="w-8 h-8 text-[#ba6a5a]" />
+                          <Battery className={`w-4 h-4 ${selectedMotorType === motorKey ? 'text-white' : 'text-[#ba6a5a]'}`} />
                         ) : (
-                          <Settings className="w-8 h-8 text-[#ba6a5a]" />
+                          <Settings className={`w-4 h-4 ${selectedMotorType === motorKey ? 'text-white' : 'text-[#ba6a5a]'}`} />
                         )}
+                        <span className="whitespace-nowrap">{motorData.name}</span>
+                        <span className={`text-xs font-bold ${selectedMotorType === motorKey ? 'text-white/90' : 'text-[#ba6a5a]'}`}>
+                          {motorData.price}
+                        </span>
                       </div>
-                      <div className="text-center">
-                        <h4 className="font-semibold text-white mb-1">{motorData.name}</h4>
-                        <p className="text-[#ba6a5a] font-bold text-lg">{motorData.price}</p>
-                        <p className="text-xs text-gray-400 mt-1">
-                          {motorKey === 'bldc' ? 'Energy Efficient' : 'High Performance'}
-                        </p>
+                      {/* Hover tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black/80 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                        {motorKey === 'bldc' ? 'Energy Efficient' : 'High Performance'}
                       </div>
-                    </motion.div>
+                    </motion.button>
                   ))}
                 </div>
               </div>
