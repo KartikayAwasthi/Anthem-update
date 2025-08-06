@@ -1,9 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Plus } from "lucide-react";
-import { useCart } from "../contexts/CartContext";
-import CartButton from "../components/CartButton";
 
 // Images
 const skyroImg = "/Skyro/fan6.png";
@@ -15,23 +12,43 @@ const laraImg = "/Lara/fan1.png";
 
 const Product = () => {
   const ceilingFans = [
-    { name: "SKYRO", image: skyroImg, id: "skyro", price: "₹3,999", desc: "Premium BLDC technology with whisper-quiet operation" },
-    { name: "INARA", image: inaraImg, id: "inara", price: "₹4,499", desc: "Smart home ready with LED lighting integration and less noise" },
-    { name: "eVAARA", image: evaaraImg, id: "evaara", price: "₹3,699", desc: "Exceptional value with modern aesthetics & efficiency" },
-    { name: "LARA", image: laraImg, id: "lara", price: "₹4,199", desc: "Elegant design with superior performance and reliability" },
+    { 
+      name: "SKYRO", 
+      image: skyroImg, 
+      id: "skyro", 
+      price: "₹2,999", 
+      priceRange: "₹2,999 - ₹3,999",
+      desc: "Minimal. Modern. Majestic.",
+      motorTypes: ["BLDC", "Induction"]
+    },
+    { 
+      name: "INARA", 
+      image: inaraImg, 
+      id: "inara", 
+      price: "₹3,499", 
+      priceRange: "₹3,499 - ₹4,499",
+      desc: "Crafted to Be Admired. Engineered to Perform.",
+      motorTypes: ["BLDC", "Induction"]
+    },
+    { 
+      name: "eVAARA", 
+      image: evaaraImg, 
+      id: "evaara", 
+      price: "₹3,699", 
+      priceRange: "₹3,699",
+      desc: "Exclusively features advanced BLDC motor for maximum energy efficiency",
+      motorTypes: ["BLDC"]
+    },
+    { 
+      name: "LARA", 
+      image: laraImg, 
+      id: "lara", 
+      price: "₹3,199", 
+      priceRange: "₹3,199",
+      desc: "Elegant design with reliable induction motor for consistent performance",
+      motorTypes: ["Induction"]
+    },
   ];
-
-  // const pedestalFans = [
-  //   { name: "PEDESTAL PRO", image: pedestalImg, id: "pedestalpro", price: "₹2,999", desc: "Adjustable height with maximum airflow delivery" },
-  // ];
-
-  const { addToCart } = useCart();
-
-  const handleAddToCart = (fan, e) => {
-    e.preventDefault(); // Prevent navigation when clicking add to cart
-    e.stopPropagation();
-    addToCart(fan);
-  };
 
   return (
     <div className="bg-[#1c1c1c] text-white min-h-screen pt-20 pb-16">
@@ -136,18 +153,44 @@ const Product = () => {
                   <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#e49385] transition-colors duration-300">
                      {fan.name}
                   </h3>
-                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">
+                  <p className="text-gray-400 text-sm mb-3 leading-relaxed">
                     {fan.desc}
                   </p>
+                  
+                  {/* Motor Types */}
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    {fan.motorTypes.map((motorType, index) => (
+                      <span 
+                        key={index}
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          motorType === 'BLDC' 
+                            ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                            : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                        }`}
+                      >
+                        {motorType}
+                      </span>
+                    ))}
+                    {fan.motorTypes.length > 1 && (
+                      <span className="text-xs bg-[#ba6a5a]/20 text-[#ba6a5a] px-2 py-1 rounded-full border border-[#ba6a5a]/30">
+                        Multi-Option
+                      </span>
+                    )}
+                  </div>
+                  
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold text-[#ba6a5a]">{fan.price}</span>
+                    <div className="text-left">
+                      <span className="text-2xl font-bold text-[#ba6a5a]">
+                        {fan.motorTypes.length > 1 ? 'From ' : ''}{fan.price}
+                      </span>
+                      {fan.priceRange !== fan.price && (
+                        <p className="text-xs text-gray-500 mt-1">{fan.priceRange}</p>
+                      )}
+                    </div>
                     <span className="inline-flex items-center text-[#e49385] text-sm font-medium group-hover:translate-x-1 transition-transform duration-300">
                       View Details →
                     </span>
                   </div>
-                  
-                  {/* Add to Cart Button */}
-                  <CartButton product={fan} />
                 </div>
 
                 {/* Decorative Elements */}

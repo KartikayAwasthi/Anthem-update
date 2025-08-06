@@ -102,3 +102,95 @@ canvas {
     background-position: 0% 50%;
   }
 }
+
+/* Mobile-specific optimizations */
+@media (max-width: 640px) {
+  /* Improve touch targets for mobile */
+  button, a, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Optimize images for mobile */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  
+  /* Optimize carousel for mobile */
+  .carousel-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .carousel-slide {
+    scroll-snap-align: center;
+  }
+  
+  /* Mobile banner image optimizations */
+  .banner-carousel-image {
+    object-position: center 25% !important;
+  }
+  
+  /* Mobile banner container */
+  .banner-carousel-section {
+    min-height: 100vh !important;
+    min-height: 100dvh !important; /* Use dynamic viewport height on mobile */
+  }
+}
+
+/* Medium screens - tablets */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .banner-carousel-image {
+    object-position: center 35% !important;
+  }
+}
+
+/* Large screens - desktop */
+@media (min-width: 1025px) {
+  .banner-carousel-image {
+    object-position: center 45% !important;
+  }
+}
+
+/* High DPI displays optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Prevent text scaling in landscape mode on iOS */
+@media screen and (orientation: landscape) and (max-device-width: 768px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Landscape mobile banner adjustments */
+  .banner-carousel-image {
+    object-position: center 30% !important;
+    height: 100vh !important;
+  }
+  
+  .banner-carousel-section {
+    min-height: 100vh !important;
+  }
+}
+
+/* Portrait mobile optimizations */
+@media screen and (orientation: portrait) and (max-device-width: 768px) {
+  .banner-carousel-image {
+    object-position: center 20% !important;
+  }
+  
+  .banner-carousel-section {
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+  }
+}

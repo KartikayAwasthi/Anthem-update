@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./pages/Header";
 import Footer from "./pages/Footer";
@@ -8,10 +8,6 @@ import About from "./pages/About";
 import Dealer from "./pages/Dealers";
 import Contact from "./pages/contact";
 import Chatbot from "./pages/chatbot";
-import Support from "./pages/Support";
-import FAQ from "./pages/FAQ";
-import FanDetail from "./pages/FanDetail";
-import RoomPage from "./pages/RoomPage";
 import LoadingScreen from "./components/LoadingScreen";
 import PageTransition from "./components/PageTransition";
 import ScrollToTop from "./components/ScrollToTop";
@@ -19,6 +15,12 @@ import ScrollProgressBar from "./components/ScrollProgressBar";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import { CartProvider } from "./contexts/CartContext";
 import { initSmoothScrolling } from "./utils/smoothScroll";
+
+// Lazy load heavy components for better performance
+const Support = lazy(() => import("./pages/Support"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const FanRouter = lazy(() => import("./components/fans/FanRouter"));
+const RoomPage = lazy(() => import("./pages/RoomPage"));
 
 
 function App() {
@@ -37,49 +39,51 @@ function App() {
 
         <main>
           <PageTransition>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <section id="home" className="py-8">
-                      <Home />
-                    </section>
-                    <section id="about" className="py-8">
-                      <About />
-                    </section>
-                    
-                    <section id="dealer" className="py-8">
-                      <Dealer />
-                    </section>
-                    <section id="support" className="py-8">
-                      <Support />
-                    </section>
-                    <section id="contact" className="py-8">
-                      <Contact />
-                    </section>
-                  </>
-                }
-              />
+            <Suspense fallback={<LoadingScreen />}>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <section id="home" className="py-8">
+                        <Home />
+                      </section>
+                      <section id="about" className="py-8">
+                        <About />
+                      </section>
+                      
+                      <section id="dealer" className="py-8">
+                        <Dealer />
+                      </section>
+                      <section id="support" className="py-8">
+                        <Support />
+                      </section>
+                      <section id="contact" className="py-8">
+                        <Contact />
+                      </section>
+                    </>
+                  }
+                />
 
-              {/* Dedicated Products page */}
-              <Route path="/products" element={<Products />} />
+                {/* Dedicated Products page */}
+                <Route path="/products" element={<Products />} />
 
-              {/* Fan detail page */}
-              <Route path="/fan/:fanId" element={<FanDetail />} />
+                {/* Fan detail page */}
+                <Route path="/fan/:fanId" element={<FanRouter />} />
 
-              {/* Room 3D visualizer page */}
-              <Route path="/room" element={<RoomPage />} />
+                {/* Room 3D visualizer page */}
+                <Route path="/room" element={<RoomPage />} />
 
-              {/* Separate support page route */}
-              <Route path="/support" element={<Support />} />
+                {/* Separate support page route */}
+                <Route path="/support" element={<Support />} />
 
-              {/* FAQ page route */}
-              <Route path="/faq" element={<FAQ />} />
+                {/* FAQ page route */}
+                <Route path="/faq" element={<FAQ />} />
 
-              {/* Redirect unknown routes to homepage */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+                {/* Redirect unknown routes to homepage */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
           </PageTransition>
         </main>
 

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { scrollToNextSectionEnhanced } from "../utils/smoothScroll";
 import Testimonial from "./Testimonial";
@@ -11,34 +11,148 @@ const skyroImg = "/Skyro/fan5.png";
 const inaraImg = "/inara-ecom/White/white-inara4.jpg"; // Updated to use inara-ecom
 const evaaraImg = "/eVaara/fan3.png"; // eVaara fan image
 const laraImg = "/Lara/fan1.png"; // Lara fan image
+// Banner images for carousel
+const bannerImages = [
+  "/Banner/cloud-2.jpg",
+  "/Banner/copy 1.jpg",
+  "/Banner/copy 4.jpg"
+];
 // const pedestalImg = "/pedestal.webp"; // Pedestal fan image
 
 const Home = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
+  };
+
+  // Touch handlers for mobile swipe
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) nextSlide();
+    if (isRightSwipe) prevSlide();
+    
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
+
   return (
     <div className="w-full min-h-0 overflow-x-hidden snap-y snap-mandatory scroll-smooth smooth-scroll bg-[#1c1c1c] text-white">
-      {/* ✅ Video Background Hero */}
-      <section className="relative h-screen min-h-[600px] w-full flex items-center justify-center snap-start bg-[#1c1c1c] overflow-hidden">
+      {/* ✅ Banner Image Carousel Hero */}
+      <section className="banner-carousel-section relative h-screen min-h-[600px] sm:min-h-[700px] md:min-h-[800px] lg:min-h-[900px] w-full flex items-center justify-center snap-start bg-[#1c1c1c] overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video
-            className="w-full h-full object-cover sm:object-center"
-            style={{
-              objectPosition: window.innerWidth < 768 ? 'center center' : 'center center'
-            }}
-            src="/anthem-background.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
+          {/* Banner Image Carousel */}
+          <div 
+            className="relative w-full h-full"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
-            Your browser does not support the video tag.
-          </video>
-          {/* Responsive overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40 sm:bg-black/20"></div>
+            {bannerImages.map((image, index) => (
+              <motion.div
+                key={index}
+                className="absolute inset-0 w-full h-full"
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ 
+                  opacity: index === currentSlide ? 1 : 0,
+                  scale: index === currentSlide ? 1 : 1.05
+                }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+              >
+                <picture>
+                  <source media="(max-width: 640px)" srcSet={image} />
+                  <source media="(max-width: 1024px)" srcSet={image} />
+                  <img
+                    className="w-full h-full object-cover banner-carousel-image"
+                    src={image}
+                    alt={`Banner ${index + 1}`}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    style={{
+                      objectFit: 'cover',
+                      minHeight: '100%',
+                      minWidth: '100%'
+                    }}
+                  />
+                </picture>
+              </motion.div>
+            ))}
+            
+            {/* Carousel Navigation - Better positioned for mobile */}
+            <div className="absolute inset-0 flex items-center justify-between p-3 sm:p-4 md:p-6 z-20">
+              <motion.button
+                onClick={prevSlide}
+                className="bg-black/40 hover:bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 group shadow-lg"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:translate-x-[-2px] transition-transform duration-300" />
+              </motion.button>
+              
+              <motion.button
+                onClick={nextSlide}
+                className="bg-black/40 hover:bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition-all duration-300 group shadow-lg"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label="Next image"
+              >
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:translate-x-[2px] transition-transform duration-300" />
+              </motion.button>
+            </div>
+
+            {/* Carousel Indicators - Better mobile positioning */}
+            <div className="absolute bottom-12 sm:bottom-16 md:bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3 z-20">
+              {bannerImages.map((_, index) => (
+                <motion.button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 shadow-md ${
+                    index === currentSlide 
+                      ? 'bg-[#ba6a5a] shadow-lg shadow-[#ba6a5a]/50 scale-125' 
+                      : 'bg-white/60 hover:bg-white/80'
+                  }`}
+                  whileHover={{ scale: index === currentSlide ? 1.25 : 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+          
+          {/* Enhanced responsive overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 sm:from-black/50 sm:via-black/30 sm:to-black/60 md:from-black/40 md:via-black/20 md:to-black/50"></div>
         </div>
-        <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center justify-center h-full px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center justify-center h-full px-3 sm:px-4 md:px-6 lg:px-8">
           <motion.div
-            className="inline-block px-4 py-2 bg-[#ba6a5a]/10 border border-[#ba6a5a]/20 rounded-full text-[#ba6a5a] text-sm font-medium mb-6 backdrop-blur-sm"
+            className="inline-block px-3 py-2 sm:px-4 sm:py-2 bg-[#ba6a5a]/20 border border-[#ba6a5a]/30 rounded-full text-[#ba6a5a] text-xs sm:text-sm font-medium mb-4 sm:mb-6 backdrop-blur-sm shadow-lg"
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
@@ -46,33 +160,30 @@ const Home = () => {
             ✨ ANTHEM BY EMSQUARE
           </motion.div>
           
-         <div className="w-full px-2 sm:px-4 flex flex-col items-center">
+         <div className="w-full px-2 sm:px-4 flex flex-col items-center text-center">
   <motion.h1
-    className="text-[clamp(1.5rem,5vw,4.5rem)] font-bold mb-4 text-white drop-shadow-2xl text-center"
+    className="text-[clamp(1.8rem,6vw,4.5rem)] font-bold mb-3 sm:mb-4 text-white drop-shadow-2xl text-center leading-tight"
     style={{ 
-      fontSize: 'clamp(1.5rem, calc(100vw / 20), 4.5rem)',
+      fontSize: 'clamp(1.8rem, calc(100vw / 18), 4.5rem)',
       lineHeight: '1.1',
-      whiteSpace: 'nowrap',
-      overflow: 'visible',
-      width: '100%',
       maxWidth: '100vw'
     }}
     initial={{ y: 50, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
     transition={{ delay: 0.5, duration: 0.8 }}
   >
-    <span className="inline-block">The Future of </span>
-    <span className="bg-gradient-to-r from-[#ba6a5a] to-[#e49385] bg-clip-text text-transparent inline-block">
-       Motion
+    <span className="block sm:inline">The Future of </span>
+    <span className="bg-gradient-to-r from-[#ba6a5a] to-[#e49385] bg-clip-text text-transparent block sm:inline">
+       Comfort
     </span>
-    <span className="inline-block"> Now in Comfort</span>
+    <span className="block sm:inline"> Now in Motion</span>
   </motion.h1>
 
   <motion.p
-    className="text-[clamp(0.9rem,2.5vw,1.5rem)] text-gray-200 drop-shadow-lg text-center leading-relaxed max-w-4xl px-2"
+    className="text-[clamp(1rem,3vw,1.5rem)] text-gray-200 drop-shadow-lg text-center leading-relaxed max-w-4xl px-2 sm:px-4 mb-4 sm:mb-6"
     style={{ 
-      fontSize: 'clamp(0.9rem, calc(100vw / 30), 1.5rem)',
-      lineHeight: '1.3'
+      fontSize: 'clamp(1rem, calc(100vw / 25), 1.5rem)',
+      lineHeight: '1.4'
     }}
     initial={{ y: 50, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
@@ -85,9 +196,9 @@ const Home = () => {
   </motion.p>
 </div>
 
-        {/* Scroll Down Button */}
+        {/* Scroll Down Button - Better mobile positioning */}
         <motion.div 
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-6 sm:bottom-8 md:bottom-10 left-1/2 transform -translate-x-1/2 z-20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.8 }}
@@ -101,7 +212,7 @@ const Home = () => {
                 offset: -80 
               });
             }}
-            className="group bg-gradient-to-r from-[#ba6a5a] to-[#e49385] text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+            className="group bg-gradient-to-r from-[#ba6a5a] to-[#e49385] text-white p-3 sm:p-3.5 md:p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
             whileHover={{ 
               scale: 1.1,
               boxShadow: "0 8px 30px rgba(186, 106, 90, 0.3)"
@@ -126,7 +237,7 @@ const Home = () => {
               transition={{ duration: 0.2 }}
               className="relative z-10"
             >
-              <ChevronDown className="w-6 h-6" />
+              <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.div>
             
             {/* Ripple effect */}

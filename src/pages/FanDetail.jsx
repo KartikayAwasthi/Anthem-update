@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Star, Zap, Volume2, Shield, ChevronDown, ChevronUp, ShoppingCart, Heart, X, ChevronLeft, ChevronRight, ZoomIn, Share2, Settings, Battery } from "lucide-react";
+import { ArrowLeft, Star, Zap, Volume2, Shield, ChevronDown, ChevronUp, ShoppingCart, Heart, X, ChevronLeft, ChevronRight, ZoomIn, Share2, Settings, Battery, Info } from "lucide-react";
 import ColorChangeTransition from "../components/ColorChangeTransition";
 import { useCart } from "../contexts/CartContext";
 import CartButton from "../components/CartButton";
@@ -263,7 +263,18 @@ const FanDetail = () => {
   const { addToCart } = useCart();
   const fan = fanData[fanId];
   const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedMotorType, setSelectedMotorType] = useState('bldc'); // Default to BLDC
+  
+  // Initialize motor type based on available options for each fan
+  const getDefaultMotorType = () => {
+    if (!fan?.motorTypes) return 'bldc';
+    const availableTypes = Object.keys(fan.motorTypes);
+    // Priority: BLDC first, then induction
+    if (availableTypes.includes('bldc')) return 'bldc';
+    if (availableTypes.includes('induction')) return 'induction';
+    return availableTypes[0]; // fallback to first available
+  };
+  
+  const [selectedMotorType, setSelectedMotorType] = useState(getDefaultMotorType());
   const [showColorTransition, setShowColorTransition] = useState(false);
   const [isSpecsOpen, setIsSpecsOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -274,7 +285,13 @@ const FanDetail = () => {
 
   // Get current motor data based on selection
   const getCurrentMotorData = () => {
-    return fan?.motorTypes?.[selectedMotorType] || fan?.motorTypes?.bldc || {};
+    if (!fan?.motorTypes) return {};
+    const currentMotor = fan.motorTypes[selectedMotorType];
+    if (currentMotor) return currentMotor;
+    
+    // Fallback to first available motor type if selected one doesn't exist
+    const availableTypes = Object.keys(fan.motorTypes);
+    return fan.motorTypes[availableTypes[0]] || {};
   };
 
   // Handle motor type change
@@ -337,6 +354,20 @@ const FanDetail = () => {
     } else {
       setSelectedColor(null);
     }
+    
+    // Reset motor type to default for the current fan
+    if (fan?.motorTypes) {
+      const availableTypes = Object.keys(fan.motorTypes);
+      // Priority: BLDC first, then induction
+      if (availableTypes.includes('bldc')) {
+        setSelectedMotorType('bldc');
+      } else if (availableTypes.includes('induction')) {
+        setSelectedMotorType('induction');
+      } else {
+        setSelectedMotorType(availableTypes[0]); // fallback to first available
+      }
+    }
+    
     window.scrollTo(0, 0);
   }, [fanId, fan]);
 
@@ -592,39 +623,96 @@ const FanDetail = () => {
             )}
 
             {/* Motor Type Selection */}
-            {fan.motorTypes && (
+            {fan.motorTypes && Object.keys(fan.motorTypes).length > 0 && (
               <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-[#e49385] mb-2">Motor Type</h3>
-                <div className="flex flex-wrap gap-2">
-                  {Object.entries(fan.motorTypes).map(([motorKey, motorData]) => (
-                    <motion.button
-                      key={motorKey}
-                      whileHover={{ scale: 1.02, y: -1 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`group relative px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 transform shadow-lg hover:shadow-xl ${
-                        selectedMotorType === motorKey
-                          ? "bg-gradient-to-r from-[#ba6a5a] to-[#e49385] text-white shadow-[#ba6a5a]/25"
-                          : "bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 hover:border-[#e49385]/50"
-                      }`}
-                      onClick={() => handleMotorTypeChange(motorKey)}
-                    >
-                      <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-[#e49385] mb-2">Motor Type</h3>
+                  {Object.keys(fan.motorTypes).length === 1 && (
+                    <span className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded-full">
+                      Single Option Available
+                    </span>
+                  )}
+                </div>
+                
+                {Object.keys(fan.motorTypes).length === 1 ? (
+                  // Single motor type - show as info card instead of button
+                  <div className="bg-gradient-to-r from-[#ba6a5a] to-[#e49385] text-white p-4 rounded-xl shadow-lg">
+                    {Object.entries(fan.motorTypes).map(([motorKey, motorData]) => (
+                      <div key={motorKey} className="flex items-center gap-3">
                         {motorKey === 'bldc' ? (
-                          <Battery className={`w-4 h-4 ${selectedMotorType === motorKey ? 'text-white' : 'text-[#ba6a5a]'}`} />
+                          <Battery className="w-6 h-6 text-white" />
                         ) : (
-                          <Settings className={`w-4 h-4 ${selectedMotorType === motorKey ? 'text-white' : 'text-[#ba6a5a]'}`} />
+                          <Settings className="w-6 h-6 text-white" />
                         )}
-                        <span className="whitespace-nowrap">{motorData.name}</span>
-                        <span className={`text-xs font-bold ${selectedMotorType === motorKey ? 'text-white/90' : 'text-[#ba6a5a]'}`}>
-                          {motorData.price}
-                        </span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold text-lg">{motorData.name}</span>
+                            <span className="text-white/90 font-bold">{motorData.price}</span>
+                          </div>
+                          <p className="text-white/80 text-sm">
+                            {motorKey === 'bldc' 
+                              ? 'Energy efficient BLDC technology for maximum savings' 
+                              : 'Reliable induction motor for consistent high performance'
+                            }
+                          </p>
+                        </div>
+                        <div className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                          {motorKey === 'bldc' ? 'Energy Star' : 'High Power'}
+                        </div>
                       </div>
-                      {/* Hover tooltip */}
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black/80 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
-                        {motorKey === 'bldc' ? 'Energy Efficient' : 'High Performance'}
-                      </div>
-                    </motion.button>
-                  ))}
+                    ))}
+                  </div>
+                ) : (
+                  // Multiple motor types - show as selection buttons
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(fan.motorTypes).map(([motorKey, motorData]) => (
+                      <motion.button
+                        key={motorKey}
+                        whileHover={{ scale: 1.02, y: -1 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`group relative px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 transform shadow-lg hover:shadow-xl ${
+                          selectedMotorType === motorKey
+                            ? "bg-gradient-to-r from-[#ba6a5a] to-[#e49385] text-white shadow-[#ba6a5a]/25"
+                            : "bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 hover:border-[#e49385]/50"
+                        }`}
+                        onClick={() => handleMotorTypeChange(motorKey)}
+                      >
+                        <div className="flex items-center gap-2">
+                          {motorKey === 'bldc' ? (
+                            <Battery className={`w-4 h-4 ${selectedMotorType === motorKey ? 'text-white' : 'text-[#ba6a5a]'}`} />
+                          ) : (
+                            <Settings className={`w-4 h-4 ${selectedMotorType === motorKey ? 'text-white' : 'text-[#ba6a5a]'}`} />
+                          )}
+                          <span className="whitespace-nowrap">{motorData.name}</span>
+                          <span className={`text-xs font-bold ${selectedMotorType === motorKey ? 'text-white/90' : 'text-[#ba6a5a]'}`}>
+                            {motorData.price}
+                          </span>
+                        </div>
+                        {/* Hover tooltip */}
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black/80 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                          {motorKey === 'bldc' ? 'Energy Efficient' : 'High Performance'}
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Motor type information */}
+                <div className="bg-[#2f2f2f]/50 p-3 rounded-lg border border-gray-600">
+                  <div className="flex items-start gap-2">
+                    <Info className="w-4 h-4 text-[#e49385] mt-0.5 flex-shrink-0" />
+                    <div className="text-xs text-gray-300">
+                      {fanId === 'skyro' || fanId === 'inara' ? (
+                        <span>This model is available in both BLDC (energy efficient) and Induction (high performance) motor variants.</span>
+                      ) : fanId === 'evaara' ? (
+                        <span>This model features an advanced BLDC motor for maximum energy efficiency and quiet operation.</span>
+                      ) : fanId === 'lara' ? (
+                        <span>This model comes with a reliable induction motor for consistent high-speed performance.</span>
+                      ) : (
+                        <span>Select your preferred motor type based on your performance and efficiency needs.</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -844,23 +932,61 @@ const FanDetail = () => {
             {Object.entries(fanData)
               .filter(([id]) => id !== fanId)
               .slice(0, 3)
-              .map(([id, relatedFan]) => (
-                <Link key={id} to={`/fan/${id}`}>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-[#2f2f2f] rounded-xl p-4 hover:bg-[#3a3a3a] transition-all duration-300"
-                  >
-                    <img
-                      src={relatedFan.image}
-                      alt={relatedFan.name}
-                      className="w-full h-32 object-contain mb-3"
-                    />
-                    <h4 className="font-semibold text-white mb-1">Anthem {relatedFan.name}</h4>
-                    <p className="text-[#ba6a5a] font-bold">{relatedFan.motorTypes?.bldc?.price || 'N/A'}</p>
-                    <p className="text-xs text-gray-400 mt-1">Starting from BLDC variant</p>
-                  </motion.div>
-                </Link>
-              ))}
+              .map(([id, relatedFan]) => {
+                // Get the best available motor type and price
+                const getRelatedFanInfo = () => {
+                  if (!relatedFan.motorTypes) return { price: 'N/A', motorType: '' };
+                  
+                  // Priority: BLDC first, then induction
+                  if (relatedFan.motorTypes.bldc) {
+                    return { 
+                      price: relatedFan.motorTypes.bldc.price, 
+                      motorType: 'BLDC' 
+                    };
+                  }
+                  if (relatedFan.motorTypes.induction) {
+                    return { 
+                      price: relatedFan.motorTypes.induction.price, 
+                      motorType: 'Induction' 
+                    };
+                  }
+                  // Fallback to first available
+                  const firstType = Object.keys(relatedFan.motorTypes)[0];
+                  return { 
+                    price: relatedFan.motorTypes[firstType].price, 
+                    motorType: relatedFan.motorTypes[firstType].name 
+                  };
+                };
+                
+                const { price, motorType } = getRelatedFanInfo();
+                
+                return (
+                  <Link key={id} to={`/fan/${id}`}>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="bg-[#2f2f2f] rounded-xl p-4 hover:bg-[#3a3a3a] transition-all duration-300"
+                    >
+                      <img
+                        src={relatedFan.image}
+                        alt={relatedFan.name}
+                        className="w-full h-32 object-contain mb-3"
+                      />
+                      <h4 className="font-semibold text-white mb-1">Anthem {relatedFan.name}</h4>
+                      <p className="text-[#ba6a5a] font-bold">{price}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <p className="text-xs text-gray-400">
+                          {motorType ? `Starting from ${motorType}` : 'Premium ceiling fan'}
+                        </p>
+                        {Object.keys(relatedFan.motorTypes || {}).length > 1 && (
+                          <span className="bg-[#ba6a5a]/20 text-[#ba6a5a] text-xs px-2 py-0.5 rounded-full">
+                            Multiple Options
+                          </span>
+                        )}
+                      </div>
+                    </motion.div>
+                  </Link>
+                );
+              })}
           </div>
         </motion.div>
       </div>

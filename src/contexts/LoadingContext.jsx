@@ -29,11 +29,11 @@ export const LoadingProvider = ({ children }) => {
     setIsTransitioning(true);
     setLoadingMessage('Loading page...');
     
-    // Simulate brief loading for transition
+    // Optimized loading time for instant transitions
     const timer = setTimeout(() => {
       setIsTransitioning(false);
       setLoadingMessage('');
-    }, 300);
+    }, 50); // Further reduced from 100ms to 50ms for near-instant transitions
 
     return () => clearTimeout(timer);
   }, [location.pathname, isFirstLoad]);
